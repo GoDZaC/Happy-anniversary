@@ -362,3 +362,52 @@
                 <div class="memory-content-box" id="memoryDisplay">
                     <h3 style="color: var(--accent-pink); margin-bottom: 8px;">จุดเริ่มต้นที่เราได้พบกัน</h3>
                     <p id="memoryText" style="margin-bottom: 0;">วัน
+
+            
+<script>
+    // ตรวจสอบชื่อและเชื่อมต่อไปยังหน้าถัดไป
+    function authenticatePartner() {
+        const nameInput = document.getElementById("partnerName");
+        const terminal = document.getElementById("authTerminal");
+        const name = nameInput.value.trim();
+
+        if (name === "") {
+            terminal.innerHTML =
+                "> Error: กรุณาพิมพ์ชื่อเล่นก่อนเชื่อมต่อ...";
+            nameInput.focus();
+            return;
+        }
+
+        terminal.innerHTML =
+            "> Verifying identity...<br>" +
+            "> Welcome, " + escapeHTML(name) + "!<br>" +
+            "> Connection established successfully.";
+
+        // ไปหน้าที่ 2 หลังจากยืนยันชื่อ
+        setTimeout(function () {
+            document.getElementById("view-1").classList.remove("active");
+            document.getElementById("view-2").classList.add("active");
+
+            if (typeof calculateTimeTogether === "function") {
+                calculateTimeTogether();
+            }
+        }, 1000);
+    }
+
+    // ป้องกันข้อความที่ผู้ใช้พิมพ์ถูกตีความเป็น HTML
+    function escapeHTML(text) {
+        return text.replace(/[&<>"']/g, function (char) {
+            const entities = {
+                "&": "&amp;",
+                "<": "&lt;",
+                ">": "&gt;",
+                '"': "&quot;",
+                "'": "&#39;"
+            };
+            return entities[char];
+        });
+    }
+</script>
+</body>
+</html>
+
