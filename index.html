@@ -3,94 +3,19 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Our Eternal Love Protocol v4.2</title>
+<title>Our Eternal Love Protocol v4.3</title>
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
-<style>
-/* ===== 1. THEME TOKENS (ค่าเริ่มต้น = โหมดมืด ไม่ขึ้นกับการตั้งค่าเครื่อง) ===== */
-:root{
-  --bg:#090d16;--panel:rgba(17,24,39,.88);--field:rgba(3,7,18,.7);
-  --text:#f3f4f6;--muted:#9ca3af;--border:rgba(255,255,255,.12);
-  --pink:#f43f5e;--purple:#8b5cf6;--green:#10b981;
-  --dot:rgba(244,63,94,.18);--glow1:rgba(139,92,246,.18);--glow2:rgba(244,63,94,.15);
-}
-:root[data-theme="light"]{
-  --bg:#fff1f2;--panel:rgba(255,255,255,.92);--field:rgba(255,255,255,.95);
-  --text:#1f2937;--muted:#6b7280;--border:rgba(0,0,0,.12);
-  --dot:rgba(244,63,94,.28);--glow1:rgba(139,92,246,.12);--glow2:rgba(244,63,94,.12);
-}
-
-/* ===== 2. RESET ===== */
-*{margin:0;padding:0;box-sizing:border-box}
-html{background:var(--bg);scroll-padding-top:env(safe-area-inset-top,0px)}
-
-/* ===== 3. BACKGROUND LAYERS (แยกชั้นชัดเจน: สีพื้น → ลายจุด → แสงฟุ้ง → เนื้อหา) ===== */
-/* ชั้น 1: สีพื้น อยู่ที่ html (ด้านบน) */
-body{
-  position:relative;background:var(--bg);color:var(--text);
-  font-family:'Sarabun','Fira Code',sans-serif;
-  min-height:100vh;display:flex;justify-content:center;align-items:center;overflow-x:hidden;
-  padding:calc(16px + env(safe-area-inset-top,0px)) 0 calc(16px + env(safe-area-inset-bottom,0px));
-}
-/* ชั้น 2: ลายจุด */
-body::before{
-  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-  background-image:radial-gradient(var(--dot) 1px,transparent 1px);background-size:35px 35px;
-}
-/* ชั้น 3: แสงฟุ้งสีม่วง/ชมพู */
-body::after{
-  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
-  background:radial-gradient(circle at 15% 10%,var(--glow1),transparent 45%),radial-gradient(circle at 85% 90%,var(--glow2),transparent 45%);
-}
-/* ชั้น 4: เนื้อหา อยู่เหนือพื้นหลังทุกชั้น */
-.container{position:relative;z-index:1}
-
-/* ===== 4. LAYOUT ===== */
-.container{width:92%;max-width:860px;background:var(--panel);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;box-shadow:0 30px 60px rgba(0,0,0,.35);overflow:hidden;display:flex;flex-direction:column;min-height:580px}
-.hdr{background:rgba(3,7,18,.92);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
-.dots{display:flex;gap:8px;width:60px}.dot{width:12px;height:12px;border-radius:50%}
-.title{font:13px 'Fira Code',monospace;color:#9ca3af;text-align:center}
-.theme{background:none;border:1px solid #374151;color:#9ca3af;border-radius:6px;width:60px;padding:3px;cursor:pointer;font-size:12px}
-.progress{height:3px;background:var(--border)}
-.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--purple));transition:width .4s}
-.body{padding:clamp(18px,4vw,35px);flex-grow:1;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
-.view{display:none}.view.active{display:block;animation:fade .4s ease both}
-.nav{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:16px}
-.step{font:13px 'Fira Code',monospace;color:var(--muted)}
-
-/* ===== 5. TYPOGRAPHY & FORM ===== */
-h2{font-size:clamp(18px,3.4vw,22px);margin-bottom:10px;font-weight:600}
-p{font-size:15px;color:var(--muted);line-height:1.7;margin-bottom:16px}
-.row{display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap}
-input[type=text],input[type=date]{flex:1;min-width:180px;background:var(--field);border:1px solid var(--border);padding:12px 16px;border-radius:8px;color:var(--text);font:15px 'Sarabun',sans-serif;outline:none;transition:border .3s}
-input:focus-visible,button:focus-visible{outline:2px solid var(--pink);outline-offset:2px}
-.btn{background:linear-gradient(135deg,var(--pink),#e11d48);color:#fff;border:0;padding:11px 24px;font:600 14px 'Sarabun',sans-serif;border-radius:8px;cursor:pointer;transition:.2s;box-shadow:0 4px 15px rgba(244,63,94,.35)}
-.btn:hover:not(:disabled){transform:translateY(-2px)}.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
-.btn.alt{background:transparent;border:1px solid var(--border);color:var(--muted);box-shadow:none}
-.btn.purple{background:linear-gradient(135deg,var(--purple),#7c3aed);box-shadow:0 4px 12px rgba(139,92,246,.4)}
-
-/* ===== 6. COMPONENTS ===== */
-.terminal{background:var(--field);border:1px solid var(--border);padding:14px;border-radius:10px;font:13px/1.7 'Fira Code',monospace;color:var(--green);min-height:100px}
-.box{background:var(--field);border:1px solid var(--border);padding:20px;border-radius:12px;margin-bottom:16px}
-.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;margin-top:16px;text-align:center}
-.stat{background:rgba(127,127,127,.06);padding:14px;border-radius:8px;border:1px solid var(--border)}
-.num{font:600 clamp(20px,4vw,26px) 'Fira Code',monospace;color:var(--pink)}.lbl{font-size:13px;color:var(--muted);margin-top:4px}
-.tabs{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
-.tab{background:rgba(127,127,127,.08);border:1px solid var(--border);padding:8px 16px;border-radius:6px;color:var(--muted);cursor:pointer;font:14px 'Sarabun',sans-serif}
-.tab[aria-selected=true]{background:var(--pink);color:#fff;border-color:var(--pink)}
-.mem h3{color:var(--pink);margin-bottom:8px}.mem p{margin:0;white-space:pre-line}
-.contract{border:1px dashed var(--pink);border-radius:12px;padding:20px;margin-bottom:16px;background:var(--field)}
-.clause{display:flex;gap:10px;align-items:flex-start;padding:8px 0;cursor:pointer;font-size:15px;color:var(--text);line-height:1.5}
-.clause input{margin-top:5px;accent-color:var(--pink);width:16px;height:16px}
-.cert{text-align:center;display:none}.cert.show{display:block;animation:fade .5s both}
-.cert .big{font-size:40px}.cert .sig{font:600 22px 'Sarabun';color:var(--pink);margin:8px 0}
-.heart{position:fixed;bottom:-30px;pointer-events:none;animation:rise 3s linear forwards;z-index:9}
-#err{display:none;position:fixed;left:8px;right:8px;top:8px;z-index:99;background:#7f1d1d;color:#fff;padding:10px 14px;border-radius:8px;font:13px 'Fira Code',monospace}
-
-/* ===== 7. ANIMATION ===== */
-@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-@keyframes rise{to{transform:translateY(-110vh) rotate(30deg);opacity:0}}
-@media (prefers-reduced-motion:reduce){*,::before,::after{animation:none!important;transition:none!important}}
-</style>
+<link rel="stylesheet" href="style.css">
+<script>
+/* ตัวจับ error: ทำงานก่อนทุกอย่าง จึงรายงานได้ทั้ง error ในสคริปต์และไฟล์ที่โหลดไม่เจอ */
+window.addEventListener('error',function(e){
+  var b=document.getElementById('err'); if(!b) return;
+  var t=e.target, msg;
+  if(t && (t.src||t.href)){ if(/fonts\.(googleapis|gstatic)/.test(t.src||t.href)) return; msg='โหลดไฟล์ไม่ได้: '+(t.src||t.href).split('/').pop(); }
+  else { msg=e.message+(e.filename?' ('+e.filename.split('/').pop()+' บรรทัด '+e.lineno+')':''); }
+  b.style.display='block'; b.textContent='⚠️ '+msg;
+},true);
+</script>
 </head>
 <body>
 <div id="err" role="alert"></div>
@@ -106,13 +31,13 @@ input:focus-visible,button:focus-visible{outline:2px solid var(--pink);outline-o
   <div class="body">
     <div>
       <!-- VIEW 1 -->
-      <section class="view" id="v0">
+      <section class="view active" id="v0">
         <h2 id="authTitle"></h2><p id="authDesc"></p>
         <div class="row">
           <input type="text" id="partnerName" autocomplete="off" aria-label="ชื่อเล่น">
           <button class="btn" id="authBtn">Verify &amp; Connect</button>
         </div>
-        <div class="terminal" id="term" aria-live="polite"></div>
+        <div class="terminal" id="term" aria-live="polite">&gt; กำลังโหลด... (ถ้าข้อความนี้ค้าง แปลว่าสคริปต์ไม่ทำงาน)</div>
       </section>
 
       <!-- VIEW 2 -->
@@ -164,10 +89,101 @@ input:focus-visible,button:focus-visible{outline:2px solid var(--pink);outline-o
   </div>
 </main>
 
+<script src="config.js"></script>
+<script src="app.js"></script>
 <script>
+setTimeout(function(){
+  var b=document.getElementById('err');
+  if(!window.ELP_READY && b && b.style.display!=='block'){
+    b.style.display='block';
+    b.textContent='⚠️ สคริปต์ยังไม่ทำงาน: ตรวจว่ามีไฟล์ config.js และ app.js (ตัวพิมพ์เล็ก) อยู่ข้าง index.html';
+  }
+},2000);
+</script>
+</body>
+</html>
+/* ===== 1. THEME TOKENS (ค่าเริ่มต้น = โหมดมืด ไม่ขึ้นกับการตั้งค่าเครื่อง) ===== */
+:root{
+  --bg:#090d16;--panel:rgba(17,24,39,.88);--field:rgba(3,7,18,.7);
+  --text:#f3f4f6;--muted:#9ca3af;--border:rgba(255,255,255,.12);
+  --pink:#f43f5e;--purple:#8b5cf6;--green:#10b981;
+  --dot:rgba(244,63,94,.18);--glow1:rgba(139,92,246,.18);--glow2:rgba(244,63,94,.15);
+}
+:root[data-theme="light"]{
+  --bg:#fff1f2;--panel:rgba(255,255,255,.92);--field:rgba(255,255,255,.95);
+  --text:#1f2937;--muted:#6b7280;--border:rgba(0,0,0,.12);
+  --dot:rgba(244,63,94,.28);--glow1:rgba(139,92,246,.12);--glow2:rgba(244,63,94,.12);
+}
+
+/* ===== 2. RESET ===== */
+*{margin:0;padding:0;box-sizing:border-box}
+html{background:var(--bg);scroll-padding-top:env(safe-area-inset-top,0px)}
+
+/* ===== 3. BACKGROUND LAYERS (สีพื้น → ลายจุด → แสงฟุ้ง → เนื้อหา) ===== */
+body{
+  position:relative;background:var(--bg);color:var(--text);
+  font-family:'Sarabun','Fira Code',sans-serif;
+  min-height:100vh;display:flex;justify-content:center;align-items:center;overflow-x:hidden;
+  padding:calc(16px + env(safe-area-inset-top,0px)) 0 calc(16px + env(safe-area-inset-bottom,0px));
+}
+body::before{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background-image:radial-gradient(var(--dot) 1px,transparent 1px);background-size:35px 35px;
+}
+body::after{
+  content:"";position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:radial-gradient(circle at 15% 10%,var(--glow1),transparent 45%),radial-gradient(circle at 85% 90%,var(--glow2),transparent 45%);
+}
+.container{position:relative;z-index:1}
+
+/* ===== 4. LAYOUT ===== */
+.container{width:92%;max-width:860px;background:var(--panel);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;box-shadow:0 30px 60px rgba(0,0,0,.35);overflow:hidden;display:flex;flex-direction:column;min-height:580px}
+.hdr{background:rgba(3,7,18,.92);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+.dots{display:flex;gap:8px;width:60px}.dot{width:12px;height:12px;border-radius:50%}
+.title{font:13px 'Fira Code',monospace;color:#9ca3af;text-align:center}
+.theme{background:none;border:1px solid #374151;color:#9ca3af;border-radius:6px;width:60px;padding:3px;cursor:pointer;font-size:12px}
+.progress{height:3px;background:var(--border)}
+.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--purple));transition:width .4s}
+.body{padding:clamp(18px,4vw,35px);flex-grow:1;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
+.view{display:none}.view.active{display:block;animation:fade .4s ease both}
+.nav{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:16px}
+.step{font:13px 'Fira Code',monospace;color:var(--muted)}
+
+/* ===== 5. TYPOGRAPHY & FORM ===== */
+h2{font-size:clamp(18px,3.4vw,22px);margin-bottom:10px;font-weight:600}
+p{font-size:15px;color:var(--muted);line-height:1.7;margin-bottom:16px}
+.row{display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+input[type=text],input[type=date]{flex:1;min-width:180px;background:var(--field);border:1px solid var(--border);padding:12px 16px;border-radius:8px;color:var(--text);font:15px 'Sarabun',sans-serif;outline:none;transition:border .3s}
+input:focus-visible,button:focus-visible{outline:2px solid var(--pink);outline-offset:2px}
+.btn{background:linear-gradient(135deg,var(--pink),#e11d48);color:#fff;border:0;padding:11px 24px;font:600 14px 'Sarabun',sans-serif;border-radius:8px;cursor:pointer;transition:.2s;box-shadow:0 4px 15px rgba(244,63,94,.35)}
+.btn:hover:not(:disabled){transform:translateY(-2px)}.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.btn.alt{background:transparent;border:1px solid var(--border);color:var(--muted);box-shadow:none}
+.btn.purple{background:linear-gradient(135deg,var(--purple),#7c3aed);box-shadow:0 4px 12px rgba(139,92,246,.4)}
+
+/* ===== 6. COMPONENTS ===== */
+.terminal{background:var(--field);border:1px solid var(--border);padding:14px;border-radius:10px;font:13px/1.7 'Fira Code',monospace;color:var(--green);min-height:100px}
+.box{background:var(--field);border:1px solid var(--border);padding:20px;border-radius:12px;margin-bottom:16px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;margin-top:16px;text-align:center}
+.stat{background:rgba(127,127,127,.06);padding:14px;border-radius:8px;border:1px solid var(--border)}
+.num{font:600 clamp(20px,4vw,26px) 'Fira Code',monospace;color:var(--pink)}.lbl{font-size:13px;color:var(--muted);margin-top:4px}
+.tabs{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.tab{background:rgba(127,127,127,.08);border:1px solid var(--border);padding:8px 16px;border-radius:6px;color:var(--muted);cursor:pointer;font:14px 'Sarabun',sans-serif}
+.tab[aria-selected=true]{background:var(--pink);color:#fff;border-color:var(--pink)}
+.mem h3{color:var(--pink);margin-bottom:8px}.mem p{margin:0;white-space:pre-line}
+.contract{border:1px dashed var(--pink);border-radius:12px;padding:20px;margin-bottom:16px;background:var(--field)}
+.clause{display:flex;gap:10px;align-items:flex-start;padding:8px 0;cursor:pointer;font-size:15px;color:var(--text);line-height:1.5}
+.clause input{margin-top:5px;accent-color:var(--pink);width:16px;height:16px}
+.cert{text-align:center;display:none}.cert.show{display:block;animation:fade .5s both}
+.cert .big{font-size:40px}.cert .sig{font:600 22px 'Sarabun';color:var(--pink);margin:8px 0}
+.heart{position:fixed;bottom:-30px;pointer-events:none;animation:rise 3s linear forwards;z-index:9}
+#err{display:none;position:fixed;left:8px;right:8px;top:8px;z-index:99;background:#7f1d1d;color:#fff;padding:10px 14px;border-radius:8px;font:13px 'Fira Code',monospace}
+
+/* ===== 7. ANIMATION ===== */
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes rise{to{transform:translateY(-110vh) rotate(30deg);opacity:0}}
+@media (prefers-reduced-motion:reduce){*,::before,::after{animation:none!important;transition:none!important}}
 /* ============================================================
-   ✏️ แก้ไขเนื้อหาทั้งหมดได้ที่ CONFIG ด้านล่างนี้ที่เดียว
-   ไม่ต้องแตะโค้ดส่วนอื่นเลย
+   ✏️ แก้ไขเนื้อหาทั้งหมดได้ที่ไฟล์นี้ไฟล์เดียว
    ============================================================ */
 const CONFIG = {
   startDate: "2024-01-01",          // วันที่เริ่มคบกัน (YYYY-MM-DD)
@@ -196,8 +212,7 @@ const CONFIG = {
   melody: [523.25,659.25,783.99,659.25,698.46,880,783.99,659.25]
 };
 
-/* ---------- แสดง error บนหน้าจอ (ช่วยหาสาเหตุถ้ามีอะไรพัง) ---------- */
-window.addEventListener('error',e=>{const b=document.getElementById('err');if(b){b.style.display='block';b.textContent='⚠️ Error: '+e.message+' (บรรทัด '+e.lineno+')';}});
+if(typeof CONFIG==='undefined') throw new Error('ไม่พบ config.js');
 
 /* ---------- Helpers ---------- */
 const $ = id => document.getElementById(id);
@@ -347,8 +362,6 @@ function init(){
   };
   document.documentElement.dataset.theme = store.get("elp.theme","dark");
   go(0);
+  window.ELP_READY = true;
 }
 if(document.readyState==='loading') document.addEventListener('DOMContentLoaded',init); else init();
-</script>
-</body>
-</html>
