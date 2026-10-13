@@ -402,3 +402,170 @@ try{init();}catch(e){showError("เริ่มระบบไม่สำเร
 </script>
 </body>
 </html>
+{
+"use strict";
+const $ = id => document.getElementById(id);
+const DEFAULT_DATE = "2024-01-01";
+const titles = ["auth-protocol.sh","love-metrics.sh","memory-vault.sh","secret-contract.sh"];
+const memories = [
+ {tab:"💌 First Meet",title:"จุดเริ่มต้นที่เราได้พบกัน",text:"ทุกเรื่องราวที่สวยงามเริ่มต้นจากการได้พบเธอ\n\nเก็บความทรงจำวันแรกของเราไว้ตรงนี้"},
+ {tab:"🌍 Travels & Trips",title:"ทุกการเดินทางมีเธออยู่ข้าง ๆ",text:"สถานที่พิเศษมีความหมายมากขึ้นเมื่อเราได้ไปด้วยกัน"},
+ {tab:"❤️ Tough Times",title:"วันที่เราจับมือผ่านเรื่องยาก ๆ",text:"ความรักไม่ต้องสมบูรณ์แบบทุกวัน ขอเพียงเรารับฟังและดูแลกัน"}
+];
+const clauses = [
+ "สัญญาว่าจะรับฟังกัน แม้ความคิดเห็นไม่ตรงกัน",
+ "สัญญาว่าจะขอโทษเมื่อทำผิด และให้อภัยเมื่อพร้อม",
+ "สัญญาว่าจะหาเวลาคุณภาพให้กัน",
+ "สัญญาว่าจะเคารพความรู้สึกและพื้นที่ส่วนตัวของกันและกัน",
+ "สัญญาว่าจะดูแลความรักด้วยการกระทำ"
+];
+let step=0,authed=false,timer=null,audio=null,busy=false;
+
+function read(k,f){
+ try {const v=localStorage.getItem(k);return v===null?f:v;}
+ catch(e){return f;}
+}
+function save(k,v){try{localStorage.setItem(k,v);}catch(e){}}
+function fmt(n){return n.toLocaleString("th-TH");}
+function parseDate(s){
+ if(!/^\d{4}-\d{2}-\d{2}$/.test(s||""))return null;
+ const a=s.split("-").map(Number);
+ const d=new Date(a[0],a[1]-1,a[2],12);
+ return d.getFullYear()===a[0]&&d.getMonth()===a[1]-1&&d.getDate()===a[2]?d:null;
+}
+function showError(s){$("error").textContent="⚠️ "+s;$("error").style.display="block";}
+function go(n){
+ step=Math.max(0,Math.min(3,n));
+ document.querySelectorAll(".view").forEach((v,i)=>v.classList.toggle("active",i===step));
+ $("winTitle").textContent="~/anniversary/"+titles[step];
+ $("stepInd").textContent="STEP "+(step+1)+"/4";
+ $("bar").style.width=((step+1)*25)+"%";
+ $("prev").style.visibility=step===0?"hidden":"visible";
+ $("next").style.visibility=step===3?"hidden":"visible";
+ $("next").disabled=step===0&&!authed;
+ clearInterval(timer);
+ if(step===1){calc();timer=setInterval(calc,1000);}
+}
+function authenticate(){
+ const name=$("partnerName").value.trim();
+ if(!name){$("term").textContent="> Error: กรุณากรอกชื่อเล่นก่อน";$("partnerName").focus();return;}
+ authed=true;save("elp.name",name);
+ $("term").textContent="> Verifying identity...\n> Welcome, "+name+"!\n> Connection established.";
+ $("next").disabled=false;
+ setTimeout(()=>go(1),300);
+}
+function calc(){
+ const start=parseDate($("startDate").value||DEFAULT_DATE);
+ if(!start){$("ymd").textContent="กรุณาเลือกวันที่ให้ถูกต้อง";return;}
+ const now=new Date(),ms=Math.max(0,now-start);
+ $("sDays").textContent=fmt(Math.floor(ms/86400000));
+ $("sHours").textContent=fmt(Math.floor(ms/3600000));
+ $("sMins").textContent=fmt(Math.floor(ms/60000));
+ const today=new Date(now.getFullYear(),now.getMonth(),now.getDate(),12);
+ let next=new Date(now.getFullYear(),start.getMonth(),start.getDate(),12);
+ if(next<today)next=new Date(now.getFullYear()+1,start.getMonth(),start.getDate(),12);
+ $("sNext").textContent=fmt(Math.ceil((next-today)/86400000));
+ let y=now.getFullYear()-start.getFullYear();
+ let m=now.getMonth()-start.getMonth();
+ let d=now.getDate()-start.getDate();
+ if(d<0){m--;d+=new Date(now.getFullYear(),now.getMonth(),0).getDate();}
+ if(m<0){y--;m+=12;}
+ $("ymd").textContent=now<start?"รอวันที่ความรักของเราเริ่มต้นนะ 💕":"รวมแล้ว "+Math.max(0,y)+" ปี "+m+" เดือน "+d+" วัน 💕";
+}
+function showMemory(i){
+ document.querySelectorAll(".tab").forEach((b,j)=>b.setAttribute("aria-selected",String(i===j)));
+ const m=memories[i],box=$("memBox");
+ box.replaceChildren();
+ const h=document.createElement("h3"),p=document.createElement("p");
+ h.textContent=m.title;p.textContent=m.text;box.append(h,p);
+}
+function checkSign(){
+ const all=[...document.querySelectorAll("#clauses input")].every(c=>c.checked);
+ $("signBtn").disabled=!(all&&$("signName").value.trim());
+}
+function playMelody(){
+ const AC=window.AudioContext||window.webkitAudioContext;
+ if(!AC){showError("เบราว์เซอร์ไม่รองรับเสียง");return;}
+ if(busy)return;
+ busy=true;
+ $("audioBtn").disabled=true;
+ $("audioBtn").textContent="🎶 กำลังเล่น...";
+ try{
+  audio=audio||new AC();
+  const notes=[523.25,659.25,783.99,659.25,698.46,880,783.99,659.25];
+  const begin=audio.currentTime+.05;
+  notes.forEach((f,i)=>{
+   const o=audio.createOscillator(),g=audio.createGain(),t=begin+i*.4;
+   o.type="sine";o.frequency.value=f;
+   g.gain.setValueAtTime(.001,t);
+   g.gain.linearRampToValueAtTime(.12,t+.04);
+   g.gain.exponentialRampToValueAtTime(.001,t+.36);
+   o.connect(g);g.connect(audio.destination);o.start(t);o.stop(t+.39);
+  });
+ }catch(e){showError("เล่นเสียงไม่สำเร็จ กรุณาลองอีกครั้ง");}
+ setTimeout(()=>{busy=false;$("audioBtn").disabled=false;$("audioBtn").textContent="🎵 เปิดเพลงของเรา";},3400);
+}
+function hearts(){
+ if(window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches)return;
+ for(let i=0;i<16;i++){
+  const h=document.createElement("span");
+  h.textContent=["💖","💕","💗","❤️"][i%4];
+  h.style.cssText="position:fixed;bottom:-30px;z-index:9;pointer-events:none;left:"+(Math.random()*95)+"vw;font-size:24px;animation:rise 3s linear forwards";
+  document.body.appendChild(h);setTimeout(()=>h.remove(),3200);
+ }
+}
+function sign(){
+ if($("signBtn").disabled)return;
+ $("contract").style.display="none";
+ $("sigOut").textContent="✍️ "+$("signName").value.trim();
+ $("sigDate").textContent="ลงนามเมื่อ "+new Date().toLocaleDateString("th-TH",{dateStyle:"long"});
+ $("cert").classList.add("show");
+ save("elp.signed",$("signName").value.trim());
+ hearts();playMelody();
+}
+function init(){
+ $("partnerName").value=read("elp.name","");
+ $("startDate").value=read("elp.start",DEFAULT_DATE);
+ if(read("elp.theme","dark")==="light")document.documentElement.classList.add("light");
+ memories.forEach((m,i)=>{
+  const b=document.createElement("button");
+  b.type="button";b.className="tab";b.textContent=m.tab;
+  b.setAttribute("role","tab");b.setAttribute("aria-selected",String(i===0));
+  b.addEventListener("click",()=>showMemory(i));$("tabs").appendChild(b);
+ });
+ showMemory(0);
+ clauses.forEach(c=>{
+  const l=document.createElement("label");l.className="clause";
+  const i=document.createElement("input");i.type="checkbox";i.addEventListener("change",checkSign);
+  const s=document.createElement("span");s.textContent=c;l.append(i,s);$("clauses").appendChild(l);
+ });
+ $("authBtn").addEventListener("click",authenticate);
+ $("partnerName").addEventListener("keydown",e=>{if(e.key==="Enter")authenticate();});
+ $("startDate").addEventListener("change",()=>{save("elp.start",$("startDate").value);calc();});
+ $("signName").addEventListener("input",checkSign);
+ $("signBtn").addEventListener("click",sign);
+ $("audioBtn").addEventListener("click",playMelody);
+ $("prev").addEventListener("click",()=>go(step-1));
+ $("next").addEventListener("click",()=>{if(step!==0||authed)go(step+1);});
+ $("themeBtn").addEventListener("click",()=>{
+  document.documentElement.classList.toggle("light");
+  save("elp.theme",document.documentElement.classList.contains("light")?"light":"dark");
+ });
+ $("resetSign").addEventListener("click",()=>{
+  $("contract").style.display="block";$("cert").classList.remove("show");
+  $("signName").value="";
+  document.querySelectorAll("#clauses input").forEach(c=>c.checked=false);
+  checkSign();save("elp.signed","");
+ });
+ document.addEventListener("keydown",e=>{
+  if(e.target.matches("input,button,textarea"))return;
+  if(e.key==="ArrowRight"&&step<3&&(step!==0||authed))go(step+1);
+  if(e.key==="ArrowLeft"&&step>0)go(step-1);
+ });
+ go(0);
+}
+try{init();}catch(e){showError("เริ่มระบบไม่สำเร็จ: "+e.message);}
+})();
+</script>
+</body>
+</html>
