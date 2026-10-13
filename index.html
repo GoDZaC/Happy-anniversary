@@ -1,413 +1,184 @@
 <!DOCTYPE html>
 <html lang="th">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Our Eternal Love Protocol v3.0</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
-    <style>
-        :root {
-            --bg-color: #090d16;
-            --panel-bg: rgba(17, 24, 39, 0.85);
-            --accent-pink: #f43f5e;
-            --accent-purple: #8b5cf6;
-            --accent-green: #10b981;
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --border-color: rgba(255, 255, 255, 0.1);
-        }
-
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background-color: var(--bg-color);
-            color: var(--text-main);
-            font-family: 'Sarabun', 'Fira Code', monospace;
-            min-height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            overflow-x: hidden;
-        }
-
-        /* เอฟเฟกต์ตารางฉากหลัง */
-        .grid-bg {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background-image: radial-gradient(rgba(244, 63, 94, 0.15) 1px, transparent 1px);
-            background-size: 35px 35px;
-            z-index: -1;
-        }
-
-        .container {
-            width: 92%;
-            max-width: 850px;
-            background: var(--panel-bg);
-            backdrop-filter: blur(20px);
-            border: 1px solid var(--border-color);
-            border-radius: 20px;
-            box-shadow: 0 30px 60px rgba(0, 0, 0, 0.6);
-            overflow: hidden;
-            display: flex;
-            flex-direction: column;
-            min-height: 560px;
-        }
-
-        .window-header {
-            background: rgba(3, 7, 18, 0.95);
-            padding: 14px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 1px solid var(--border-color);
-        }
-
-        .window-dots {
-            display: flex;
-            gap: 8px;
-        }
-
-        .dot { width: 12px; height: 12px; border-radius: 50%; }
-        .dot-red { background: #ef4444; }
-        .dot-yellow { background: #f59e0b; }
-        .dot-green { background: #10b981; }
-
-        .window-title {
-            font-family: 'Fira Code', monospace;
-            font-size: 13px;
-            color: var(--text-muted);
-        }
-
-        .window-body {
-            padding: 35px;
-            flex-grow: 1;
-            display: flex;
-            flex-direction: column;
-            justify-content: space-between;
-        }
-
-        .view-section {
-            display: none;
-            animation: fadeIn 0.4s ease-in-out forwards;
-        }
-
-        .view-section.active {
-            display: block;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        h2 {
-            font-size: 22px;
-            margin-bottom: 12px;
-            color: var(--text-main);
-            font-weight: 600;
-        }
-
-        p {
-            font-size: 15px;
-            color: var(--text-muted);
-            line-height: 1.6;
-            margin-bottom: 20px;
-        }
-
-        /* หน้าที่ 1: Auth & Terminal */
-        .terminal-box {
-            background: rgba(3, 7, 18, 0.6);
-            border: 1px solid var(--border-color);
-            padding: 15px;
-            border-radius: 10px;
-            font-family: 'Fira Code', monospace;
-            font-size: 13px;
-            color: var(--accent-green);
-            height: 110px;
-            overflow-y: auto;
-            margin-bottom: 20px;
-        }
-
-        .input-group {
-            display: flex;
-            gap: 12px;
-            margin-bottom: 15px;
-        }
-
-        input[type="text"] {
-            flex-grow: 1;
-            background: rgba(3, 7, 18, 0.8);
-            border: 1px solid var(--border-color);
-            padding: 12px 16px;
-            border-radius: 8px;
-            color: white;
-            font-size: 15px;
-            font-family: 'Sarabun', sans-serif;
-            outline: none;
-            transition: border 0.3s;
-        }
-
-        input[type="text"]:focus {
-            border-color: var(--accent-pink);
-        }
-
-        /* หน้าที่ 2: Real-time Calculator */
-        .calc-box {
-            background: rgba(3, 7, 18, 0.5);
-            border: 1px solid var(--border-color);
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .stat-card {
-            background: rgba(255, 255, 255, 0.03);
-            padding: 15px;
-            border-radius: 8px;
-            border: 1px solid var(--border-color);
-        }
-
-        .stat-num {
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--accent-pink);
-            font-family: 'Fira Code', monospace;
-        }
-
-        .stat-label {
-            font-size: 13px;
-            color: var(--text-muted);
-            margin-top: 5px;
-        }
-
-        /* หน้าที่ 3: Memory Vault (Tabs) */
-        .memory-tabs {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-
-        .tab-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid var(--border-color);
-            padding: 8px 16px;
-            border-radius: 6px;
-            color: var(--text-muted);
-            cursor: pointer;
-            font-size: 14px;
-            transition: all 0.2s;
-        }
-
-        .tab-btn.active {
-            background: var(--accent-pink);
-            color: white;
-            border-color: var(--accent-pink);
-        }
-
-        .memory-content-box {
-            background: rgba(3, 7, 18, 0.6);
-            border: 1px solid var(--border-color);
-            padding: 20px;
-            border-radius: 10px;
-            min-height: 130px;
-        }
-
-        /* หน้าที่ 4: Sound & Secret Contract */
-        .contract-box {
-            background: rgba(3, 7, 18, 0.8);
-            border: 1px dashed var(--accent-pink);
-            padding: 20px;
-            border-radius: 12px;
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .btn-audio {
-            background: linear-gradient(135deg, var(--accent-purple), #7c3aed);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 14px;
-            font-weight: 600;
-            margin-bottom: 15px;
-            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4);
-            transition: transform 0.2s;
-        }
-
-        .btn-audio:hover { transform: scale(1.05); }
-
-        /* Nav Footer */
-        .nav-footer {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-top: 1px solid var(--border-color);
-            padding-top: 20px;
-            margin-top: 20px;
-        }
-
-        .btn {
-            background: linear-gradient(135deg, var(--accent-pink), #e11d48);
-            color: white;
-            border: none;
-            padding: 10px 26px;
-            font-size: 14px;
-            font-weight: 600;
-            border-radius: 8px;
-            cursor: pointer;
-            transition: all 0.2s ease;
-            box-shadow: 0 4px 15px rgba(244, 63, 94, 0.4);
-        }
-
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 6px 20px rgba(244, 63, 94, 0.6); }
-        .btn:disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
-
-        .btn-secondary {
-            background: transparent;
-            border: 1px solid var(--border-color);
-            color: var(--text-muted);
-            box-shadow: none;
-        }
-        .btn-secondary:hover { background: rgba(255, 255, 255, 0.05); color: var(--text-main); }
-        .step-indicator { font-family: 'Fira Code', monospace; font-size: 13px; color: var(--text-muted); }
-    </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Our Eternal Love Protocol v4.0</title>
+<link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+<style>
+:root{
+  --bg:#090d16;--panel:rgba(17,24,39,.88);--pink:#f43f5e;--purple:#8b5cf6;--green:#10b981;
+  --text:#f3f4f6;--muted:#9ca3af;--border:rgba(255,255,255,.12);--field:rgba(3,7,18,.7);--dot:rgba(244,63,94,.18);
+  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
+  --bg:#fff1f2;--panel:rgba(255,255,255,.9);--text:#1f2937;--muted:#6b7280;--border:rgba(0,0,0,.12);--field:rgba(255,255,255,.9);--dot:rgba(244,63,94,.25);}}
+:root[data-theme="light"]{--bg:#fff1f2;--panel:rgba(255,255,255,.9);--text:#1f2937;--muted:#6b7280;--border:rgba(0,0,0,.12);--field:rgba(255,255,255,.9);--dot:rgba(244,63,94,.25)}
+:root[data-theme="dark"]{--bg:#090d16;--panel:rgba(17,24,39,.88);--text:#f3f4f6;--muted:#9ca3af;--border:rgba(255,255,255,.12);--field:rgba(3,7,18,.7);--dot:rgba(244,63,94,.18)}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{background:var(--bg);color:var(--text);font-family:'Sarabun','Fira Code',sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:16px 0;overflow-x:hidden}
+.grid-bg{position:fixed;inset:0;background-image:radial-gradient(var(--dot) 1px,transparent 1px);background-size:35px 35px;z-index:-1}
+.container{width:92%;max-width:860px;background:var(--panel);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;box-shadow:0 30px 60px rgba(0,0,0,.35);overflow:hidden;display:flex;flex-direction:column;min-height:580px}
+.hdr{background:rgba(3,7,18,.92);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
+.dots{display:flex;gap:8px;width:60px}.dot{width:12px;height:12px;border-radius:50%}
+.progress{height:3px;background:var(--border)}.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--purple));transition:width .4s}
+.title{font:13px 'Fira Code',monospace;color:#9ca3af;text-align:center}
+.theme{background:none;border:1px solid #374151;color:#9ca3af;border-radius:6px;width:60px;padding:3px;cursor:pointer;font-size:12px}
+.body{padding:clamp(18px,4vw,35px);flex-grow:1;display:flex;flex-direction:column;justify-content:space-between;gap:16px}
+.view{display:none}.view.active{display:block;animation:fade .4s ease both}
+@keyframes fade{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+h2{font-size:clamp(18px,3.4vw,22px);margin-bottom:10px;font-weight:600}
+p{font-size:15px;color:var(--muted);line-height:1.7;margin-bottom:16px}
+.terminal{background:var(--field);border:1px solid var(--border);padding:14px;border-radius:10px;font:13px/1.7 'Fira Code',monospace;color:var(--green);min-height:100px}
+.row{display:flex;gap:12px;margin-bottom:14px;flex-wrap:wrap}
+input[type=text],input[type=date]{flex:1;min-width:180px;background:var(--field);border:1px solid var(--border);padding:12px 16px;border-radius:8px;color:var(--text);font:15px 'Sarabun',sans-serif;outline:none;transition:border .3s}
+input:focus-visible,button:focus-visible{outline:2px solid var(--pink);outline-offset:2px}
+.btn{background:linear-gradient(135deg,var(--pink),#e11d48);color:#fff;border:0;padding:11px 24px;font:600 14px 'Sarabun',sans-serif;border-radius:8px;cursor:pointer;transition:.2s;box-shadow:0 4px 15px rgba(244,63,94,.35)}
+.btn:hover:not(:disabled){transform:translateY(-2px)}.btn:disabled{opacity:.45;cursor:not-allowed;box-shadow:none}
+.btn.alt{background:transparent;border:1px solid var(--border);color:var(--muted);box-shadow:none}
+.btn.purple{background:linear-gradient(135deg,var(--purple),#7c3aed);box-shadow:0 4px 12px rgba(139,92,246,.4)}
+.box{background:var(--field);border:1px solid var(--border);padding:20px;border-radius:12px;margin-bottom:16px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:14px;margin-top:16px;text-align:center}
+.stat{background:rgba(127,127,127,.06);padding:14px;border-radius:8px;border:1px solid var(--border)}
+.num{font:600 clamp(20px,4vw,26px) 'Fira Code',monospace;color:var(--pink)}.lbl{font-size:13px;color:var(--muted);margin-top:4px}
+.tabs{display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap}
+.tab{background:rgba(127,127,127,.08);border:1px solid var(--border);padding:8px 16px;border-radius:6px;color:var(--muted);cursor:pointer;font:14px 'Sarabun',sans-serif}
+.tab[aria-selected=true]{background:var(--pink);color:#fff;border-color:var(--pink)}
+.mem h3{color:var(--pink);margin-bottom:8px}.mem p{margin:0;white-space:pre-line}
+.contract{border:1px dashed var(--pink);border-radius:12px;padding:20px;margin-bottom:16px;background:var(--field)}
+.clause{display:flex;gap:10px;align-items:flex-start;padding:8px 0;cursor:pointer;font-size:15px;color:var(--text);line-height:1.5}
+.clause input{margin-top:5px;accent-color:var(--pink);width:16px;height:16px}
+.cert{text-align:center;display:none}.cert.show{display:block;animation:fade .5s both}
+.cert .big{font-size:40px}.cert .sig{font:600 22px 'Sarabun';color:var(--pink);margin:8px 0}
+.heart{position:fixed;bottom:-30px;pointer-events:none;animation:rise 3s linear forwards;z-index:9}
+@keyframes rise{to{transform:translateY(-110vh) rotate(30deg);opacity:0}}
+.nav{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:16px}
+.step{font:13px 'Fira Code',monospace;color:var(--muted)}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
 </head>
 <body>
+<div class="grid-bg"></div>
+<main class="container">
+  <div class="hdr">
+    <div class="dots"><i class="dot" style="background:#ef4444"></i><i class="dot" style="background:#f59e0b"></i><i class="dot" style="background:#10b981"></i></div>
+    <div class="title" id="winTitle"></div>
+    <button class="theme" id="themeBtn" aria-label="สลับธีม">🌗</button>
+  </div>
+  <div class="progress"><i id="bar"></i></div>
 
-    <div class="grid-bg"></div>
-
-    <div class="container">
-        <!-- Window Header -->
-        <div class="window-header">
-            <div class="window-dots">
-                <div class="dot dot-red"></div>
-                <div class="dot dot-yellow"></div>
-                <div class="dot dot-green"></div>
-            </div>
-            <div class="window-title" id="windowTitle">~/anniversary/auth-protocol.sh</div>
-            <div style="width: 50px;"></div>
+  <div class="body">
+    <div>
+      <!-- VIEW 1 -->
+      <section class="view" id="v0">
+        <h2 id="authTitle"></h2><p id="authDesc"></p>
+        <div class="row">
+          <input type="text" id="partnerName" autocomplete="off" aria-label="ชื่อเล่น">
+          <button class="btn" id="authBtn">Verify &amp; Connect</button>
         </div>
+        <div class="terminal" id="term" aria-live="polite"></div>
+      </section>
 
-        <!-- Window Body -->
-        <div class="window-body">
-            
-            <!-- VIEW 1: Authentication & Connection -->
-            <div class="view-section active" id="view-1">
-                <h2>Security Authentication: ยืนยันตัวตนคนสำคัญของหัวใจ</h2>
-                <p>ก่อนเข้าสู่ระบบความทรงจำของเรา กรุณากรอกชื่อเล่นของคุณแฟนและกดเชื่อมต่อเพื่อพิสูจน์ว่านี่คือพื้นที่ของเราสองคนครับ</p>
-                
-                <div class="input-group">
-                    <input type="text" id="partnerName" placeholder="พิมพ์ชื่อเล่นแฟนของคุณที่นี่..." autocomplete="off">
-                    <button class="btn" onclick="authenticatePartner()">Verify & Connect</button>
-                </div>
+      <!-- VIEW 2 -->
+      <section class="view" id="v1">
+        <h2 id="metricTitle"></h2><p id="metricDesc"></p>
+        <div class="box">
+          <label for="startDate" style="color:var(--text);font-size:14px">วันที่เราคบกัน:</label>
+          <input type="date" id="startDate" style="margin-left:8px;flex:none;min-width:0;padding:8px 12px">
+          <div class="stats">
+            <div class="stat"><div class="num" id="sDays">0</div><div class="lbl">วันที่ได้รักกัน</div></div>
+            <div class="stat"><div class="num" id="sHours">0</div><div class="lbl">ชั่วโมงแห่งรอยยิ้ม</div></div>
+            <div class="stat"><div class="num" id="sMins">0</div><div class="lbl">นาทีที่คิดถึงกัน</div></div>
+            <div class="stat"><div class="num" id="sNext">0</div><div class="lbl">วันถึงวันครบรอบถัดไป</div></div>
+          </div>
+          <p id="ymd" style="margin:16px 0 0;text-align:center;color:var(--text)"></p>
+        </div>
+      </section>
 
-                <div class="terminal-box" id="authTerminal">
-                    > System initializing... Waiting for user input...<br>
-                    > Target database: [ Eternal Love Core ]
-                </div>
-            </div>
+      <!-- VIEW 3 -->
+      <section class="view" id="v2">
+        <h2 id="memTitle"></h2><p id="memDesc"></p>
+        <div class="tabs" role="tablist" id="tabs"></div>
+        <div class="box mem" id="memBox" role="tabpanel"></div>
+      </section>
 
-            <!-- VIEW 2: Real-time Love Analytics Calculator -->
-            <div class="view-section" id="view-2">
-                <h2>Love Metric Engine: คำนวณช่วงเวลาที่เราผูกพันกัน</h2>
-                <p>ระบบได้ดึงข้อมูลตั้งแต่วันที่เราเริ่มรักกัน มาคำนวณสถิติความสุขและระยะเวลาแบบเรียลไทม์:</p>
-                
-                <div class="calc-box">
-                    <p style="margin-bottom: 5px; color: var(--text-main);">เลือกวันที่เราคบกัน:</p>
-                    <input type="date" id="startDate" value="2024-01-01" style="background: rgba(3,7,18,0.9); border: 1px solid var(--border-color); color: white; padding: 8px 12px; border-radius: 6px; font-family: 'Fira Code';" onchange="calculateTimeTogether()">
-                    
-                    <div class="stats-grid">
-                        <div class="stat-card">
-                            <div class="stat-num" id="daysCount">0</div>
-                            <div class="stat-label">วันที่ได้รักกัน</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-num" id="hoursCount">0</div>
-                            <div class="stat-label">ชั่วโมงแห่งรอยยิ้ม</div>
-                        </div>
-                        <div class="stat-card">
-                            <div class="stat-num" id="smilesCount">999k+</div>
-                            <div class="stat-label">ความทรงจำดีๆ</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
+      <!-- VIEW 4 -->
+      <section class="view" id="v3">
+        <h2 id="conTitle"></h2><p id="conDesc"></p>
+        <button class="btn purple" id="audioBtn" style="margin-bottom:14px">🎵 เปิดเพลงของเรา</button>
+        <div class="contract" id="contract">
+          <div id="clauses"></div>
+          <div class="row" style="margin:14px 0 0">
+            <input type="text" id="signName" placeholder="เซ็นชื่อที่นี่..." autocomplete="off" aria-label="ลายเซ็น">
+            <button class="btn" id="signBtn" disabled>ลงนามสัญญา 💍</button>
+          </div>
+        </div>
+        <div class="contract cert" id="cert">
+          <div class="big">💖</div><h2>สัญญาถูกบันทึกเรียบร้อย</h2>
+          <div class="sig" id="sigOut"></div><p id="sigDate" style="margin:0"></p>
+        </div>
+      </section>
+    </div>
 
-            <!-- VIEW 3: Interactive Memory Vault -->
-            <div class="view-section" id="view-3">
-                <h2>Memory Vault: คลังบันทึกความทรงจำของเรา</h2>
-                <p>เลือกหมวดหมู่เพื่อเปิดดูความรู้สึกและเรื่องราวที่เราผ่านพ้นมาด้วยกันครับ:</p>
-                
-                <div class="memory-tabs">
-                    <button class="tab-btn active" onclick="switchMemory(0)">💌 First Meet</button>
-                    <button class="tab-btn" onclick="switchMemory(1)">🌍 Travels & Trips</button>
-                    <button class="tab-btn" onclick="switchMemory(2)">🔥 Tough Times</button>
-                </div>
+    <div class="nav">
+      <button class="btn alt" id="prev">← ย้อนกลับ</button>
+      <span class="step" id="stepInd"></span>
+      <button class="btn" id="next" disabled>ถัดไป →</button>
+    </div>
+  </div>
+</main>
 
-                <div class="memory-content-box" id="memoryDisplay">
-                    <h3 style="color: var(--accent-pink); margin-bottom: 8px;">จุดเริ่มต้นที่เราได้พบกัน</h3>
-                    <p id="memoryText" style="margin-bottom: 0;">วัน
-
-            
 <script>
-    // ตรวจสอบชื่อและเชื่อมต่อไปยังหน้าถัดไป
-    function authenticatePartner() {
-        const nameInput = document.getElementById("partnerName");
-        const terminal = document.getElementById("authTerminal");
-        const name = nameInput.value.trim();
+/* ============================================================
+   ✏️ แก้ไขเนื้อหาทั้งหมดได้ที่ CONFIG ด้านล่างนี้ที่เดียว
+   ไม่ต้องแตะโค้ดส่วนอื่นเลย
+   ============================================================ */
+const CONFIG = {
+  startDate: "2024-01-01",          // วันที่เริ่มคบกัน (YYYY-MM-DD)
+  authTitle: "Security Authentication: ยืนยันตัวตนคนสำคัญของหัวใจ",
+  authDesc:  "ก่อนเข้าสู่ระบบความทรงจำของเรา กรุณากรอกชื่อเล่นของคุณแฟนเพื่อพิสูจน์ว่านี่คือพื้นที่ของเราสองคนครับ",
+  authPlaceholder: "พิมพ์ชื่อเล่นแฟนของคุณที่นี่...",
+  metricTitle: "Love Metric Engine: คำนวณช่วงเวลาที่เราผูกพันกัน",
+  metricDesc:  "ระบบคำนวณระยะเวลาตั้งแต่วันที่เราเริ่มรักกัน แบบเรียลไทม์:",
+  memTitle: "Memory Vault: คลังบันทึกความทรงจำของเรา",
+  memDesc:  "เลือกหมวดหมู่เพื่อเปิดดูเรื่องราวที่เราผ่านมาด้วยกันครับ:",
+  // เพิ่ม/ลบ/แก้ความทรงจำได้ตามต้องการ แค่เพิ่มบล็อก {...}
+  memories: [
+    { tab:"💌 First Meet",       title:"จุดเริ่มต้นที่เราได้พบกัน", text:"วันที่เราเจอกันครั้งแรก... (แก้ข้อความตรงนี้)\nขึ้นบรรทัดใหม่ได้เลย" },
+    { tab:"🌍 Travels & Trips",  title:"ทุกการเดินทางมีเธออยู่ข้างๆ", text:"ที่เที่ยวแรกของเรา... (แก้ข้อความตรงนี้)" },
+    { tab:"🔥 Tough Times",      title:"ช่วงเวลาที่เราผ่านมันมาด้วยกัน", text:"วันที่ยากที่สุด แต่เราไม่ปล่อยมือกัน... (แก้ข้อความตรงนี้)" }
+  ],
+  contractTitle: "Secret Contract: สัญญาลับของเราสองคน",
+  contractDesc:  "อ่านข้อตกลงให้ครบ ติ๊กทุกข้อ แล้วลงนามได้เลยครับ:",
+  clauses: [
+    "สัญญาว่าจะเป็นคนแรกที่ขอโทษเมื่อทะเลาะกัน",
+    "สัญญาว่าจะไม่นอนทั้งที่ยังโกรธกัน",
+    "สัญญาว่าจะพาไปกินของอร่อยอย่างน้อยเดือนละครั้ง",
+    "สัญญาว่าจะรักกันแบบนี้ไปตลอด"
+  ],
+  // โน้ตเพลง (Hz) เปลี่ยนทำนองได้ — สร้างเสียงด้วย Web Audio ไม่ต้องใช้ไฟล์
+  melody: [523.25,659.25,783.99,659.25,698.46,880,783.99,659.25]
+};
 
-        if (name === "") {
-            terminal.innerHTML =
-                "> Error: กรุณาพิมพ์ชื่อเล่นก่อนเชื่อมต่อ...";
-            nameInput.focus();
-            return;
-        }
+/* ---------- Helpers ---------- */
+const $ = id => document.getElementById(id);
+const store = {
+  get(k,d){ try{ const v=localStorage.getItem(k); return v===null?d:v; }catch(e){ return d; } },
+  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
+};
+const fmt = n => n.toLocaleString("th-TH");
+function parseDate(s){ const [y,m,d]=s.split("-").map(Number); return new Date(y,m-1,d); }
 
-        terminal.innerHTML =
-            "> Verifying identity...<br>" +
-            "> Welcome, " + escapeHTML(name) + "!<br>" +
-            "> Connection established successfully.";
+/* ---------- State ---------- */
+const VIEWS = 4, TITLES = ["auth-protocol.sh","love-metrics.sh","memory-vault.sh","secret-contract.sh"];
+let step = 0, authed = false, signed = false, tickTimer = null;
 
-        // ไปหน้าที่ 2 หลังจากยืนยันชื่อ
-        setTimeout(function () {
-            document.getElementById("view-1").classList.remove("active");
-            document.getElementById("view-2").classList.add("active");
-
-            if (typeof calculateTimeTogether === "function") {
-                calculateTimeTogether();
-            }
-        }, 1000);
-    }
-
-    // ป้องกันข้อความที่ผู้ใช้พิมพ์ถูกตีความเป็น HTML
-    function escapeHTML(text) {
-        return text.replace(/[&<>"']/g, function (char) {
-            const entities = {
-                "&": "&amp;",
-                "<": "&lt;",
-                ">": "&gt;",
-                '"': "&quot;",
-                "'": "&#39;"
-            };
-            return entities[char];
-        });
-    }
-</script>
-</body>
-</html>
-
+function go(n){
+  step = Math.max(0, Math.min(VIEWS-1, n));
+  document.querySelectorAll(".view").forEach((v,i)=>v.classList.toggle("active", i===step));
+  $("winTitle").textContent = "~/anniversary/" + TITLES[step];
+  $("stepInd").textContent = `STEP ${step+1}/${VIEWS}`;
+  $("bar").style.width = ((step+1)/VIEWS*100)+"%";
+  $("prev").style.visibility = step===0 ? "hidden" : "visible";
+  $("next").style.visibility = step===VIEWS-1 ? "hidden" : "visible";
