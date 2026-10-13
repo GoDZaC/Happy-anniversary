@@ -1,93 +1,182 @@
-
 <!DOCTYPE html>
 <html lang="th">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Happy Anniversary ❤️</title>
-  <style>
-    * {
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Anniversary My Love ❤️</title>
+    <!-- นำเข้าฟอนต์ Google Fonts ภาษาไทย (Sarabun) และอังกฤษ (Poppins) -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    body {
-      margin: 0;
-      min-height: 100vh;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 20px;
-      font-family: Arial, sans-serif;
-      text-align: center;
-      background: linear-gradient(135deg, #ffd6e7, #fff0f5);
-      color: #9b2855;
-    }
+        body {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-family: 'Sarabun', 'Poppins', sans-serif;
+            overflow: hidden;
+            position: relative;
+        }
 
-    .card {
-      width: 100%;
-      max-width: 500px;
-      padding: 35px 24px;
-      background: white;
-      border-radius: 25px;
-      box-shadow: 0 10px 35px #d86b8c40;
-    }
+        /* กล่องการ์ดตรงกลาง */
+        .card {
+            background: rgba(255, 255, 255, 0.85);
+            backdrop-filter: blur(10px);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+            z-index: 10;
+            animation: fadeIn 1.5s ease-in-out;
+        }
 
-    .heart {
-      font-size: 75px;
-      animation: beat 1s infinite;
-    }
+        /* รูปหัวใจกระพริบ */
+        .heart-icon {
+            font-size: 50px;
+            color: #ff4757;
+            animation: heartbeat 1.2s infinite;
+            margin-bottom: 20px;
+        }
 
-    h1 {
-      color: #e84376;
-    }
+        h1 {
+            color: #2f3542;
+            font-size: 24px;
+            margin-bottom: 10px;
+            font-weight: 600;
+        }
 
-    p {
-      font-size: 18px;
-      line-height: 1.8;
-    }
+        p {
+            color: #57606f;
+            font-size: 16px;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
 
-    button {
-      border: none;
-      border-radius: 30px;
-      padding: 14px 22px;
-      background: #e84376;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-    }
+        /* ปุ่มกดเปิดใจ */
+        .btn {
+            background: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
+            transition: all 0.3s ease;
+            font-family: 'Sarabun', sans-serif;
+        }
 
-    #message {
-      color: #e84376;
-      font-weight: bold;
-    }
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(255, 71, 87, 0.6);
+        }
 
-    @keyframes beat {
-      50% { transform: scale(1.15); }
-    }
-  </style>
+        /* ซ่อนข้อความพิเศษตอนแรก */
+        .hidden-message {
+            display: none;
+            margin-top: 15px;
+            color: #ff4757;
+            font-weight: 600;
+            animation: fadeIn 0.8s ease-in-out;
+        }
+
+        /* แอนิเมชันหัวใจลอยฉากหลัง */
+        .floating-heart {
+            position: absolute;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 20px;
+            animation: floatUp 4s linear infinite;
+            z-index: 1;
+        }
+
+        @keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.15); }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0.8);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-10vh) scale(1.2);
+                opacity: 0;
+            }
+        }
+    </style>
 </head>
 <body>
-  <main class="card">
-    <div class="heart">❤️</div>
-    <h1>Happy Anniversary</h1>
-    <p>
-      สุขสันต์วันครบรอบนะคนพิเศษ 💕<br>
-      ขอบคุณที่เข้ามาเป็นความสุขในทุก ๆ วัน
-    </p>
-    <p>ขอให้เรามีรอยยิ้มให้กันตลอดไป 🌷</p>
 
-    <button onclick="showMessage()">
-      กดอ่านข้อความพิเศษ 💌
-    </button>
+    <!-- การ์ดข้อความหลัก -->
+    <div class="card">
+        <div class="heart-icon">❤️</div>
+        <h1>Happy Anniversary</h1>
+        <p>ขอบคุณที่อยู่ข้างกันและสร้างความทรงจำดีๆ ด้วยกันมาตลอดนะ <br>เธอคือของขวัญที่ดีที่สุดในชีวิตเค้าเลย 💕</p>
+        <button class="btn" onclick="revealMessage()">กดเพื่อรับคำสัญญา 💌</button>
+        <div id="secretText" class="hidden-message">
+            "ไม่ว่าจะอีกกี่ปี ก็จะรักและจับมือเติบโตไปด้วยกันแบบนี้เรื่อยๆ นะครับ/ค่ะ" ✨
+        </div>
+    </div>
 
-    <p id="message"></p>
-  </main>
+    <!-- สคริปต์ JavaScript สำหรับสร้างลูกเล่น -->
+    <script>
+        // ฟังก์ชันกดปุ่มแสดงข้อความลับ
+        function revealMessage() {
+            const secretText = document.getElementById('secretText');
+            secretText.style.display = 'block';
+            
+            // เพิ่มความพิเศษ: สร้างหัวใจพุ่งออกมาตอนกด
+            for (let i = 0; i < 15; i++) {
+                createHeartBurst();
+            }
+        }
 
-  <script>
-    function showMessage() {
-      document.getElementById("message").textContent =
-        "รักเธอมากที่สุดเลย ❤️ ขอบคุณที่อยู่ด้วยกัน";
-    }
-  </script>
+        // ฟังก์ชันสร้างหัวใจลอยพื้นหลังอัตโนมัติ
+        function createHeart() {
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            heart.innerHTML = '❤️';
+            heart.style.left = Math.random() * 100 + 'vw';
+            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
+            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 4000);
+        }
+
+        // สั่งให้หัวใจลอยขึ้นมาเรื่อยๆ ทุกๆ 300 มิลลิวินาที
+        setInterval(createHeart, 300);
+
+        // ฟังก์ชันหัวใจกระจายตอนกดปุ่ม
+        function createHeartBurst() {
+            const heart = document.createElement('div');
+            heart.classList.add('floating-heart');
+            heart.innerHTML = '💖';
+            heart.style.left = '50vw';
+            heart.style.top = '50vh';
+            heart.style.animationDuration = (Math.random() * 1.5 + 1) + 's';
+            document.body.appendChild(heart);
+
+            setTimeout(() => {
+                heart.remove();
+            }, 1500);
+        }
+    </script>
 </body>
 </html>
