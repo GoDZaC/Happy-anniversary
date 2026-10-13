@@ -3,10 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Happy Anniversary My Love ❤️</title>
-    <!-- นำเข้าฟอนต์ Google Fonts ภาษาไทย (Sarabun) และอังกฤษ (Poppins) -->
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>System Anniversary v2.0 - Core Love Protocol</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
     <style>
+        :root {
+            --bg-color: #0f172a;
+            --panel-bg: rgba(30, 41, 59, 0.7);
+            --accent-green: #10b981;
+            --accent-pink: #f43f5e;
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --border-color: rgba(255, 255, 255, 0.1);
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -14,169 +23,347 @@
         }
 
         body {
-            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 99%, #fecfef 100%);
-            height: 100vh;
+            background-color: var(--bg-color);
+            color: var(--text-main);
+            font-family: 'Sarabun', 'Fira Code', monospace;
+            min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            font-family: 'Sarabun', 'Poppins', sans-serif;
-            overflow: hidden;
+            overflow-x: hidden;
             position: relative;
         }
 
-        /* กล่องการ์ดตรงกลาง */
-        .card {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(10px);
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
-            text-align: center;
-            max-width: 400px;
-            width: 90%;
-            z-index: 10;
-            animation: fadeIn 1.5s ease-in-out;
-        }
-
-        /* รูปหัวใจกระพริบ */
-        .heart-icon {
-            font-size: 50px;
-            color: #ff4757;
-            animation: heartbeat 1.2s infinite;
-            margin-bottom: 20px;
-        }
-
-        h1 {
-            color: #2f3542;
-            font-size: 24px;
-            margin-bottom: 10px;
-            font-weight: 600;
-        }
-
-        p {
-            color: #57606f;
-            font-size: 16px;
-            line-height: 1.6;
-            margin-bottom: 25px;
-        }
-
-        /* ปุ่มกดเปิดใจ */
-        .btn {
-            background: linear-gradient(135deg, #ff4757 0%, #ff6b81 100%);
-            color: white;
-            border: none;
-            padding: 12px 30px;
-            font-size: 16px;
-            border-radius: 50px;
-            cursor: pointer;
-            box-shadow: 0 5px 15px rgba(255, 71, 87, 0.4);
-            transition: all 0.3s ease;
-            font-family: 'Sarabun', sans-serif;
-        }
-
-        .btn:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 8px 20px rgba(255, 71, 87, 0.6);
-        }
-
-        /* ซ่อนข้อความพิเศษตอนแรก */
-        .hidden-message {
-            display: none;
-            margin-top: 15px;
-            color: #ff4757;
-            font-weight: 600;
-            animation: fadeIn 0.8s ease-in-out;
-        }
-
-        /* แอนิเมชันหัวใจลอยฉากหลัง */
-        .floating-heart {
+        /* ตารางพื้นหลังเอฟเฟกต์โค้ด */
+        .grid-bg {
             position: absolute;
-            color: rgba(255, 255, 255, 0.6);
-            font-size: 20px;
-            animation: floatUp 4s linear infinite;
-            z-index: 1;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(var(--border-color) 1px, transparent 1px);
+            background-size: 30px 30px;
+            opacity: 0.5;
+            z-index: -1;
         }
 
-        @keyframes heartbeat {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.15); }
+        /* คอนเทนเนอร์หลักระดับโปร */
+        .container {
+            width: 90%;
+            max-width: 800px;
+            background: var(--panel-bg);
+            backdrop-filter: blur(16px);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 520px;
+        }
+
+        /* แถบหัวหน้าต่างสไตล์ IDE / Terminal */
+        .window-header {
+            background: rgba(15, 23, 42, 0.9);
+            padding: 12px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .window-dots {
+            display: flex;
+            gap: 8px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #ef4444; }
+        .dot-yellow { background: #f59e0b; }
+        .dot-green { background: #10b981; }
+
+        .window-title {
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            color: var(--text-muted);
+        }
+
+        /* พื้นที่เนื้อหาภายในหน้าต่าง (Multi-page views) */
+        .window-body {
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .view-section {
+            display: none;
+            animation: fadeIn 0.4s ease-in-out forwards;
+        }
+
+        .view-section.active {
+            display: block;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        @keyframes floatUp {
-            0% {
-                transform: translateY(100vh) scale(0.8);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(-10vh) scale(1.2);
-                opacity: 0;
-            }
+        /* ---------------- หน้าที่ 1: Terminal Boot ---------------- */
+        .terminal-text {
+            font-family: 'Fira Code', monospace;
+            font-size: 14px;
+            line-height: 1.8;
+            color: var(--accent-green);
+        }
+
+        .cursor {
+            display: inline-block;
+            width: 8px;
+            height: 15px;
+            background: var(--accent-green);
+            animation: blink 1s infinite;
+            vertical-align: middle;
+            margin-left: 5px;
+        }
+
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
+        }
+
+        /* ---------------- หน้าที่ 2: Diagnostic / Quiz ---------------- */
+        h2 {
+            font-size: 22px;
+            margin-bottom: 15px;
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .diagnostic-box {
+            background: rgba(15, 23, 42, 0.5);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+        }
+
+        .metric-bar {
+            margin-bottom: 15px;
+        }
+
+        .metric-label {
+            display: flex;
+            justify-content: space-between;
+            font-size: 14px;
+            margin-bottom: 5px;
+            color: var(--text-muted);
+        }
+
+        .progress-track {
+            background: var(--border-color);
+            height: 8px;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, var(--accent-pink), #ec4899);
+            height: 100%;
+            width: 0%;
+            transition: width 1.5s ease-in-out;
+        }
+
+        /* ---------------- หน้าที่ 3: Memory Timeline ---------------- */
+        .timeline {
+            position: relative;
+            padding-left: 20px;
+            border-left: 2px solid var(--accent-pink);
+            margin: 15px 0;
+        }
+
+        .timeline-item {
+            margin-bottom: 20px;
+            position: relative;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -25px;
+            top: 4px;
+            width: 10px;
+            height: 10px;
+            background: var(--accent-pink);
+            border-radius: 50%;
+            box-shadow: 0 0 10px var(--accent-pink);
+        }
+
+        .timeline-date {
+            font-size: 12px;
+            color: var(--accent-pink);
+            font-family: 'Fira Code', monospace;
+        }
+
+        .timeline-desc {
+            font-size: 15px;
+            color: var(--text-main);
+            margin-top: 4px;
+        }
+
+        /* ---------------- หน้าที่ 4: Final Success Core ---------------- */
+        .success-box {
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        .heart-pulse {
+            font-size: 60px;
+            color: var(--accent-pink);
+            animation: pulseBeat 1.2s infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes pulseBeat {
+            0%, 100% { transform: scale(1); filter: drop-shadow(0 0 10px var(--accent-pink)); }
+            50% { transform: scale(1.2); filter: drop-shadow(0 0 25px var(--accent-pink)); }
+        }
+
+        .secret-key {
+            background: rgba(15, 23, 42, 0.8);
+            border: 1px dashed var(--accent-green);
+            padding: 12px;
+            font-family: 'Fira Code', monospace;
+            color: var(--accent-green);
+            font-size: 14px;
+            border-radius: 8px;
+            margin: 20px 0;
+            word-break: break-all;
+        }
+
+        /* ควบคุมปุ่มกด (Navigation Footer) */
+        .nav-footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-top: 1px solid var(--border-color);
+            padding-top: 20px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+            color: white;
+            border: none;
+            padding: 10px 24px;
+            font-size: 14px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-family: 'Sarabun', sans-serif;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(59, 130, 246, 0.5);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            border: 1px solid var(--border-color);
+            color: var(--text-muted);
+            box-shadow: none;
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+        }
+
+        .step-indicator {
+            font-family: 'Fira Code', monospace;
+            font-size: 13px;
+            color: var(--text-muted);
         }
     </style>
 </head>
 <body>
 
-    <!-- การ์ดข้อความหลัก -->
-    <div class="card">
-        <div class="heart-icon">❤️</div>
-        <h1>Happy Anniversary</h1>
-        <p>ขอบคุณที่อยู่ข้างกันและสร้างความทรงจำดีๆ ด้วยกันมาตลอดนะ <br>เธอคือของขวัญที่ดีที่สุดในชีวิตเค้าเลย 💕</p>
-        <button class="btn" onclick="revealMessage()">กดเพื่อรับคำสัญญา 💌</button>
-        <div id="secretText" class="hidden-message">
-            "ไม่ว่าจะอีกกี่ปี ก็จะรักและจับมือเติบโตไปด้วยกันแบบนี้เรื่อยๆ นะครับ/ค่ะ" ✨
+    <div class="grid-bg"></div>
+
+    <div class="container">
+        <!-- Window Header -->
+        <div class="window-header">
+            <div class="window-dots">
+                <div class="dot dot-red"></div>
+                <div class="dot dot-yellow"></div>
+                <div class="dot dot-green"></div>
+            </div>
+            <div class="window-title" id="windowTitle">~/anniversary/core-protocol.sh</div>
+            <div style="width: 50px;"></div>
         </div>
-    </div>
 
-    <!-- สคริปต์ JavaScript สำหรับสร้างลูกเล่น -->
-    <script>
-        // ฟังก์ชันกดปุ่มแสดงข้อความลับ
-        function revealMessage() {
-            const secretText = document.getElementById('secretText');
-            secretText.style.display = 'block';
+        <!-- Window Body -->
+        <div class="window-body">
             
-            // เพิ่มความพิเศษ: สร้างหัวใจพุ่งออกมาตอนกด
-            for (let i = 0; i < 15; i++) {
-                createHeartBurst();
-            }
-        }
+            <!-- VIEW 1: Terminal Boot Sequence -->
+            <div class="view-section active" id="view-1">
+                <div class="terminal-text" id="terminalOutput">
+                    > Initializing love_core_v2026.exe...<br>
+                    > Loading security protocols... OK<br>
+                    > Mounting eternal database... SUCCESS<br>
+                    > Target identified: [ แฟนสุดที่รักของฉัน ]<br>
+                    > System Status: READY FOR ANNIVERSARY SURPRISE.<span class="cursor"></span>
+                </div>
+            </div>
 
-        // ฟังก์ชันสร้างหัวใจลอยพื้นหลังอัตโนมัติ
-        function createHeart() {
-            const heart = document.createElement('div');
-            heart.classList.add('floating-heart');
-            heart.innerHTML = '❤️';
-            heart.style.left = Math.random() * 100 + 'vw';
-            heart.style.animationDuration = (Math.random() * 3 + 3) + 's';
-            heart.style.fontSize = (Math.random() * 20 + 10) + 'px';
-            document.body.appendChild(heart);
+            <!-- VIEW 2: Diagnostic & Analytics -->
+            <div class="view-section" id="view-2">
+                <h2>System Analytics & Relationship Diagnostics</h2>
+                <div class="diagnostic-box">
+                    <div class="metric-bar">
+                        <div class="metric-label">
+                            <span>Love Level (ความรักที่มีให้เธอ)</span>
+                            <span id="val-1">99.9%</span>
+                        </div>
+                        <div class="progress-track"><div class="progress-fill" style="width: 99.9%;"></div></div>
+                    </div>
+                    <div class="metric-bar">
+                        <div class="metric-label">
+                            <span>Happiness Index (ดัชนีความสุขร่วมกัน)</span>
+                            <span id="val-2">Infinity / ∞</span>
+                        </div>
+                        <div class="progress-track"><div class="progress-fill" style="width: 100%;"></div></div>
+                    </div>
+                    <div class="metric-bar">
+                        <div class="metric-label">
+                            <span>Bugs / Arguments (ข้อผิดพลาดที่เกิดขึ้น)</span>
+                            <span id="val-3">0 (Fixed Immediately)</span>
+                        </div>
+                        <div class="progress-track"><div class="progress-fill" style="width: 5%;"></div></div>
+                    </div>
+                </div>
+                <p style="font-size: 14px; color: var(--text-muted);">* ระบบยืนยันความเสถียร: ความสัมพันธ์นี้ไม่มีวันล่ม (Zero Downtime) และได้รับการันตีว่าทำงานร่วมกันได้ตลอดไป</p>
+            </div>
 
-            setTimeout(() => {
-                heart.remove();
-            }, 4000);
-        }
-
-        // สั่งให้หัวใจลอยขึ้นมาเรื่อยๆ ทุกๆ 300 มิลลิวินาที
-        setInterval(createHeart, 300);
-
-        // ฟังก์ชันหัวใจกระจายตอนกดปุ่ม
-        function createHeartBurst() {
-            const heart = document.createElement('div');
-            heart.classList.add('floating-heart');
-            heart.innerHTML = '💖';
-            heart.style.left = '50vw';
-            heart.style.top = '50vh';
-            heart.style.animationDuration = (Math.random() * 1.5 + 1) + 's';
-            document.body.appendChild(heart);
-
-            setTimeout(() => {
-                heart.remove();
-            }, 1500);
-        }
-    </script>
-</body>
-</html>
+            <!-- VIEW 3: Memory Timeline -->
+            <div class="view-section" id="view-3">
+                <h2>Milestone Timeline (Deployment History)</h2>
+                <div class="timeline">
+                    <div class="timeline-item">
+                        <div class="timeline-date">v1.0.0 - First Commit</div>
+                        <div class="timeline-desc">วันที่เราเริ่มต้นรู้จักและตกลงทำความรู้จักกันครั้งแรก</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">v1.5.0 - Major Update</div>
+                        <div class="timeline-desc">ผ่านเรื่องราวและสร้างความทรงจำดีๆ ร่วมกันในทุกเทศกาล</div>
+                    </div>
+                    <div class="timeline-item">
+                        <div class="timeline-date">v2.0.0 - Current Anniversary
