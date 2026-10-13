@@ -3,13 +3,12 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Our Eternal Love Protocol v4.0</title>
+<title>Our Eternal Love Protocol v4.1</title>
 <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Sarabun:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
 :root{
   --bg:#090d16;--panel:rgba(17,24,39,.88);--pink:#f43f5e;--purple:#8b5cf6;--green:#10b981;
   --text:#f3f4f6;--muted:#9ca3af;--border:rgba(255,255,255,.12);--field:rgba(3,7,18,.7);--dot:rgba(244,63,94,.18);
-  box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);
 }
 @media (prefers-color-scheme:light){:root:not([data-theme="dark"]){
   --bg:#fff1f2;--panel:rgba(255,255,255,.9);--text:#1f2937;--muted:#6b7280;--border:rgba(0,0,0,.12);--field:rgba(255,255,255,.9);--dot:rgba(244,63,94,.25);}}
@@ -17,9 +16,9 @@
 :root[data-theme="dark"]{--bg:#090d16;--panel:rgba(17,24,39,.88);--text:#f3f4f6;--muted:#9ca3af;--border:rgba(255,255,255,.12);--field:rgba(3,7,18,.7);--dot:rgba(244,63,94,.18)}
 *{margin:0;padding:0;box-sizing:border-box}
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
-body{background:var(--bg);color:var(--text);font-family:'Sarabun','Fira Code',sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:center;padding:16px 0;overflow-x:hidden}
+body{background:var(--bg);color:var(--text);font-family:'Sarabun','Fira Code',sans-serif;min-height:100vh;display:flex;justify-content:center;align-items:center;overflow-x:hidden;padding:calc(16px + env(safe-area-inset-top,0px)) 0 calc(16px + env(safe-area-inset-bottom,0px))}
 .grid-bg{position:fixed;inset:0;background-image:radial-gradient(var(--dot) 1px,transparent 1px);background-size:35px 35px;z-index:-1}
-.container{width:92%;max-width:860px;background:var(--panel);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;box-shadow:0 30px 60px rgba(0,0,0,.35);overflow:hidden;display:flex;flex-direction:column;min-height:580px}
+.container{width:92%;max-width:860px;background:var(--panel);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border:1px solid var(--border);border-radius:20px;box-shadow:0 30px 60px rgba(0,0,0,.35);overflow:hidden;display:flex;flex-direction:column;min-height:580px}
 .hdr{background:rgba(3,7,18,.92);padding:14px 20px;display:flex;justify-content:space-between;align-items:center;border-bottom:1px solid var(--border)}
 .dots{display:flex;gap:8px;width:60px}.dot{width:12px;height:12px;border-radius:50%}
 .progress{height:3px;background:var(--border)}.progress i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--pink),var(--purple));transition:width .4s}
@@ -55,10 +54,13 @@ input:focus-visible,button:focus-visible{outline:2px solid var(--pink);outline-o
 @keyframes rise{to{transform:translateY(-110vh) rotate(30deg);opacity:0}}
 .nav{display:flex;justify-content:space-between;align-items:center;border-top:1px solid var(--border);padding-top:16px}
 .step{font:13px 'Fira Code',monospace;color:var(--muted)}
+#err{display:none;position:fixed;left:8px;right:8px;top:8px;z-index:99;background:#7f1d1d;color:#fff;padding:10px 14px;border-radius:8px;font:13px 'Fira Code',monospace}
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </head>
 <body>
+<div id="err" role="alert"></div>
+<noscript><p style="padding:20px;color:#f43f5e">กรุณาเปิดใช้งาน JavaScript</p></noscript>
 <div class="grid-bg"></div>
 <main class="container">
   <div class="hdr">
@@ -140,175 +142,3 @@ const CONFIG = {
   authDesc:  "ก่อนเข้าสู่ระบบความทรงจำของเรา กรุณากรอกชื่อเล่นของคุณแฟนเพื่อพิสูจน์ว่านี่คือพื้นที่ของเราสองคนครับ",
   authPlaceholder: "พิมพ์ชื่อเล่นแฟนของคุณที่นี่...",
   metricTitle: "Love Metric Engine: คำนวณช่วงเวลาที่เราผูกพันกัน",
-  metricDesc:  "ระบบคำนวณระยะเวลาตั้งแต่วันที่เราเริ่มรักกัน แบบเรียลไทม์:",
-  memTitle: "Memory Vault: คลังบันทึกความทรงจำของเรา",
-  memDesc:  "เลือกหมวดหมู่เพื่อเปิดดูเรื่องราวที่เราผ่านมาด้วยกันครับ:",
-  // เพิ่ม/ลบ/แก้ความทรงจำได้ตามต้องการ แค่เพิ่มบล็อก {...}
-  memories: [
-    { tab:"💌 First Meet",       title:"จุดเริ่มต้นที่เราได้พบกัน", text:"วันที่เราเจอกันครั้งแรก... (แก้ข้อความตรงนี้)\nขึ้นบรรทัดใหม่ได้เลย" },
-    { tab:"🌍 Travels & Trips",  title:"ทุกการเดินทางมีเธออยู่ข้างๆ", text:"ที่เที่ยวแรกของเรา... (แก้ข้อความตรงนี้)" },
-    { tab:"🔥 Tough Times",      title:"ช่วงเวลาที่เราผ่านมันมาด้วยกัน", text:"วันที่ยากที่สุด แต่เราไม่ปล่อยมือกัน... (แก้ข้อความตรงนี้)" }
-  ],
-  contractTitle: "Secret Contract: สัญญาลับของเราสองคน",
-  contractDesc:  "อ่านข้อตกลงให้ครบ ติ๊กทุกข้อ แล้วลงนามได้เลยครับ:",
-  clauses: [
-    "สัญญาว่าจะเป็นคนแรกที่ขอโทษเมื่อทะเลาะกัน",
-    "สัญญาว่าจะไม่นอนทั้งที่ยังโกรธกัน",
-    "สัญญาว่าจะพาไปกินของอร่อยอย่างน้อยเดือนละครั้ง",
-    "สัญญาว่าจะรักกันแบบนี้ไปตลอด"
-  ],
-  // โน้ตเพลง (Hz) เปลี่ยนทำนองได้ — สร้างเสียงด้วย Web Audio ไม่ต้องใช้ไฟล์
-  melody: [523.25,659.25,783.99,659.25,698.46,880,783.99,659.25]
-};
-
-/* ---------- Helpers ---------- */
-const $ = id => document.getElementById(id);
-const store = {
-  get(k,d){ try{ const v=localStorage.getItem(k); return v===null?d:v; }catch(e){ return d; } },
-  set(k,v){ try{ localStorage.setItem(k,v); }catch(e){} }
-};
-const fmt = n => n.toLocaleString("th-TH");
-function parseDate(s){ const [y,m,d]=s.split("-").map(Number); return new Date(y,m-1,d); }
-
-/* ---------- State ---------- */
-const VIEWS = 4, TITLES = ["auth-protocol.sh","love-metrics.sh","memory-vault.sh","secret-contract.sh"];
-let step = 0, authed = false, signed = false, tickTimer = null;
-
-function go(n){
-  step = Math.max(0, Math.min(VIEWS-1, n));
-  document.querySelectorAll(".view").forEach((v,i)=>v.classList.toggle("active", i===step));
-  $("winTitle").textContent = "~/anniversary/" + TITLES[step];
-  $("stepInd").textContent = `STEP ${step+1}/${VIEWS}`;
-  $("bar").style.width = ((step+1)/VIEWS*100)+"%";
-  $("prev").style.visibility = step===0 ? "hidden" : "visible";
-  $("next").style.visibility = step===VIEWS-1 ? "hidden" : "visible";
-  $("next").disabled = step===0 && !authed;
-  clearInterval(tickTimer);
-  if(step===1){ calc(); tickTimer = setInterval(calc,1000); }
-}
-
-/* ---------- View 1: Auth ---------- */
-function authenticate(){
-  const name = $("partnerName").value.trim(), t = $("term");
-  if(!name){ t.textContent = "> Error: กรุณาพิมพ์ชื่อเล่นก่อนเชื่อมต่อ..."; $("partnerName").focus(); return; }
-  store.set("elp.name", name);
-  t.innerHTML = "";
-  [["> Verifying identity..."],["> Welcome, "+name+"!"],["> Connection established successfully."]].forEach((l,i)=>{
-    setTimeout(()=>{ const d=document.createElement("div"); d.textContent=l[0]; t.appendChild(d); },i*350);
-  });
-  authed = true; $("next").disabled = false;
-  setTimeout(()=>go(1), 1300);
-}
-
-/* ---------- View 2: Metrics ---------- */
-function calc(){
-  const s = parseDate($("startDate").value || CONFIG.startDate), now = new Date();
-  if(isNaN(s)) return;
-  const ms = Math.max(0, now - s);
-  $("sDays").textContent  = fmt(Math.floor(ms/864e5));
-  $("sHours").textContent = fmt(Math.floor(ms/36e5));
-  $("sMins").textContent  = fmt(Math.floor(ms/6e4));
-  // วันครบรอบถัดไป
-  let nx = new Date(now.getFullYear(), s.getMonth(), s.getDate());
-  if(nx <= new Date(now.getFullYear(), now.getMonth(), now.getDate())) nx.setFullYear(nx.getFullYear()+1);
-  $("sNext").textContent = fmt(Math.ceil((nx-now)/864e5));
-  // ปี/เดือน/วัน
-  let y = now.getFullYear()-s.getFullYear(), m = now.getMonth()-s.getMonth(), d = now.getDate()-s.getDate();
-  if(d<0){ m--; d += new Date(now.getFullYear(), now.getMonth(), 0).getDate(); }
-  if(m<0){ y--; m += 12; }
-  $("ymd").textContent = ms>0 ? `รวมแล้ว ${Math.max(y,0)} ปี ${m} เดือน ${d} วัน 💕` : "";
-}
-
-/* ---------- View 3: Memories ---------- */
-function showMemory(i){
-  const m = CONFIG.memories[i];
-  document.querySelectorAll(".tab").forEach((b,j)=>b.setAttribute("aria-selected", j===i));
-  const box = $("memBox"); box.innerHTML = "";
-  const h = document.createElement("h3"), p = document.createElement("p");
-  h.textContent = m.title; p.textContent = m.text;
-  box.append(h,p);
-}
-
-/* ---------- View 4: Contract / Sound ---------- */
-let actx = null, playing = false;
-function playMelody(){
-  if(playing) return;
-  actx = actx || new (window.AudioContext||window.webkitAudioContext)();
-  playing = true; $("audioBtn").textContent = "🎶 กำลังเล่น...";
-  const t0 = actx.currentTime + .05;
-  CONFIG.melody.forEach((f,i)=>{
-    const o = actx.createOscillator(), g = actx.createGain(), t = t0 + i*.4;
-    o.type = "sine"; o.frequency.value = f;
-    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.18,t+.04); g.gain.exponentialRampToValueAtTime(.001,t+.38);
-    o.connect(g).connect(actx.destination); o.start(t); o.stop(t+.4);
-  });
-  setTimeout(()=>{ playing=false; $("audioBtn").textContent="🎵 เปิดเพลงของเรา"; }, CONFIG.melody.length*400+100);
-}
-function checkSignReady(){
-  const all = [...document.querySelectorAll("#clauses input")].every(c=>c.checked);
-  $("signBtn").disabled = !(all && $("signName").value.trim());
-}
-function sign(){
-  signed = true;
-  $("contract").style.display = "none";
-  $("sigOut").textContent = "✍️ " + $("signName").value.trim();
-  $("sigDate").textContent = "ลงนามเมื่อ " + new Date().toLocaleDateString("th-TH",{dateStyle:"long"});
-  $("cert").classList.add("show");
-  store.set("elp.signed", $("signName").value.trim());
-  playMelody(); hearts();
-}
-function hearts(){
-  if(matchMedia("(prefers-reduced-motion:reduce)").matches) return;
-  for(let i=0;i<24;i++){
-    const h = document.createElement("span"); h.className="heart"; h.textContent=["💖","💕","💗","❤️"][i%4];
-    h.style.left = Math.random()*100+"vw"; h.style.fontSize = 18+Math.random()*22+"px"; h.style.animationDelay = Math.random()*1.2+"s";
-    document.body.appendChild(h); setTimeout(()=>h.remove(),4500);
-  }
-}
-
-/* ---------- Init ---------- */
-function init(){
-  $("authTitle").textContent = CONFIG.authTitle; $("authDesc").textContent = CONFIG.authDesc;
-  $("partnerName").placeholder = CONFIG.authPlaceholder;
-  $("metricTitle").textContent = CONFIG.metricTitle; $("metricDesc").textContent = CONFIG.metricDesc;
-  $("memTitle").textContent = CONFIG.memTitle; $("memDesc").textContent = CONFIG.memDesc;
-  $("conTitle").textContent = CONFIG.contractTitle; $("conDesc").textContent = CONFIG.contractDesc;
-  $("term").textContent = "> System initializing... Waiting for user input...";
-  $("partnerName").value = store.get("elp.name","");
-  $("startDate").value = store.get("elp.start", CONFIG.startDate);
-
-  CONFIG.memories.forEach((m,i)=>{
-    const b = document.createElement("button"); b.className="tab"; b.setAttribute("role","tab");
-    b.textContent = m.tab; b.onclick = ()=>showMemory(i); $("tabs").appendChild(b);
-  });
-  showMemory(0);
-
-  CONFIG.clauses.forEach(c=>{
-    const l = document.createElement("label"); l.className="clause";
-    const i = document.createElement("input"); i.type="checkbox"; i.onchange = checkSignReady;
-    const s = document.createElement("span"); s.textContent = c; l.append(i,s); $("clauses").appendChild(l);
-  });
-
-  $("authBtn").onclick = authenticate;
-  $("partnerName").addEventListener("keydown", e=>{ if(e.key==="Enter") authenticate(); });
-  $("startDate").onchange = e=>{ store.set("elp.start", e.target.value); calc(); };
-  $("signName").addEventListener("input", checkSignReady);
-  $("signName").addEventListener("keydown", e=>{ if(e.key==="Enter" && !$("signBtn").disabled) sign(); });
-  $("signBtn").onclick = sign; $("audioBtn").onclick = playMelody;
-  $("prev").onclick = ()=>go(step-1); $("next").onclick = ()=>go(step+1);
-  document.addEventListener("keydown", e=>{
-    if(/INPUT|TEXTAREA/.test(document.activeElement.tagName)) return;
-    if(e.key==="ArrowRight" && !$("next").disabled && step<VIEWS-1) go(step+1);
-    if(e.key==="ArrowLeft" && step>0) go(step-1);
-  });
-  $("themeBtn").onclick = ()=>{
-    const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme==="dark" : !matchMedia("(prefers-color-scheme:light)").matches;
-    r.dataset.theme = dark ? "light" : "dark"; store.set("elp.theme", r.dataset.theme);
-  };
-  const th = store.get("elp.theme",""); if(th) document.documentElement.dataset.theme = th;
-  go(0);
-}
-init();
-</script>
-</body>
-</html>
