@@ -182,3 +182,133 @@ function go(n){
   $("bar").style.width = ((step+1)/VIEWS*100)+"%";
   $("prev").style.visibility = step===0 ? "hidden" : "visible";
   $("next").style.visibility = step===VIEWS-1 ? "hidden" : "visible";
+  $("next").disabled = step===0 && !authed;
+  clearInterval(tickTimer);
+  if(step===1){ calc(); tickTimer = setInterval(calc,1000); }
+}
+
+/* ---------- View 1: Auth ---------- */
+function authenticate(){
+  const name = $("partnerName").value.trim(), t = $("term");
+  if(!name){ t.textContent = "> Error: กรุณาพิมพ์ชื่อเล่นก่อนเชื่อมต่อ..."; $("partnerName").focus(); return; }
+  store.set("elp.name", name);
+  t.innerHTML = "";
+  [["> Verifying identity..."],["> Welcome, "+name+"!"],["> Connection established successfully."]].forEach((l,i)=>{
+    setTimeout(()=>{ const d=document.createElement("div"); d.textContent=l[0]; t.appendChild(d); },i*350);
+  });
+  authed = true; $("next").disabled = false;
+  setTimeout(()=>go(1), 1300);
+}
+
+/* ---------- View 2: Metrics ---------- */
+function calc(){
+  const s = parseDate($("startDate").value || CONFIG.startDate), now = new Date();
+  if(isNaN(s)) return;
+  const ms = Math.max(0, now - s);
+  $("sDays").textContent  = fmt(Math.floor(ms/864e5));
+  $("sHours").textContent = fmt(Math.floor(ms/36e5));
+  $("sMins").textContent  = fmt(Math.floor(ms/6e4));
+  // วันครบรอบถัดไป
+  let nx = new Date(now.getFullYear(), s.getMonth(), s.getDate());
+  if(nx <= new Date(now.getFullYear(), now.getMonth(), now.getDate())) nx.setFullYear(nx.getFullYear()+1);
+  $("sNext").textContent = fmt(Math.ceil((nx-now)/864e5));
+  // ปี/เดือน/วัน
+  let y = now.getFullYear()-s.getFullYear(), m = now.getMonth()-s.getMonth(), d = now.getDate()-s.getDate();
+  if(d<0){ m--; d += new Date(now.getFullYear(), now.getMonth(), 0).getDate(); }
+  if(m<0){ y--; m += 12; }
+  $("ymd").textContent = ms>0 ? `รวมแล้ว ${Math.max(y,0)} ปี ${m} เดือน ${d} วัน 💕` : "";
+}
+
+/* ---------- View 3: Memories ---------- */
+function showMemory(i){
+  const m = CONFIG.memories[i];
+  document.querySelectorAll(".tab").forEach((b,j)=>b.setAttribute("aria-selected", j===i));
+  const box = $("memBox"); box.innerHTML = "";
+  const h = document.createElement("h3"), p = document.createElement("p");
+  h.textContent = m.title; p.textContent = m.text;
+  box.append(h,p);
+}
+
+/* ---------- View 4: Contract / Sound ---------- */
+let actx = null, playing = false;
+function playMelody(){
+  if(playing) return;
+  actx = actx || new (window.AudioContext||window.webkitAudioContext)();
+  playing = true; $("audioBtn").textContent = "🎶 กำลังเล่น...";
+  const t0 = actx.currentTime + .05;
+  CONFIG.melody.forEach((f,i)=>{
+    const o = actx.createOscillator(), g = actx.createGain(), t = t0 + i*.4;
+    o.type = "sine"; o.frequency.value = f;
+    g.gain.setValueAtTime(0,t); g.gain.linearRampToValueAtTime(.18,t+.04); g.gain.exponentialRampToValueAtTime(.001,t+.38);
+    o.connect(g).connect(actx.destination); o.start(t); o.stop(t+.4);
+  });
+  setTimeout(()=>{ playing=false; $("audioBtn").textContent="🎵 เปิดเพลงของเรา"; }, CONFIG.melody.length*400+100);
+}
+function checkSignReady(){
+  const all = [...document.querySelectorAll("#clauses input")].every(c=>c.checked);
+  $("signBtn").disabled = !(all && $("signName").value.trim());
+}
+function sign(){
+  signed = true;
+  $("contract").style.display = "none";
+  $("sigOut").textContent = "✍️ " + $("signName").value.trim();
+  $("sigDate").textContent = "ลงนามเมื่อ " + new Date().toLocaleDateString("th-TH",{dateStyle:"long"});
+  $("cert").classList.add("show");
+  store.set("elp.signed", $("signName").value.trim());
+  playMelody(); hearts();
+}
+function hearts(){
+  if(matchMedia("(prefers-reduced-motion:reduce)").matches) return;
+  for(let i=0;i<24;i++){
+    const h = document.createElement("span"); h.className="heart"; h.textContent=["💖","💕","💗","❤️"][i%4];
+    h.style.left = Math.random()*100+"vw"; h.style.fontSize = 18+Math.random()*22+"px"; h.style.animationDelay = Math.random()*1.2+"s";
+    document.body.appendChild(h); setTimeout(()=>h.remove(),4500);
+  }
+}
+
+/* ---------- Init ---------- */
+function init(){
+  $("authTitle").textContent = CONFIG.authTitle; $("authDesc").textContent = CONFIG.authDesc;
+  $("partnerName").placeholder = CONFIG.authPlaceholder;
+  $("metricTitle").textContent = CONFIG.metricTitle; $("metricDesc").textContent = CONFIG.metricDesc;
+  $("memTitle").textContent = CONFIG.memTitle; $("memDesc").textContent = CONFIG.memDesc;
+  $("conTitle").textContent = CONFIG.contractTitle; $("conDesc").textContent = CONFIG.contractDesc;
+  $("term").textContent = "> System initializing... Waiting for user input...";
+  $("partnerName").value = store.get("elp.name","");
+  $("startDate").value = store.get("elp.start", CONFIG.startDate);
+
+  CONFIG.memories.forEach((m,i)=>{
+    const b = document.createElement("button"); b.className="tab"; b.setAttribute("role","tab");
+    b.textContent = m.tab; b.onclick = ()=>showMemory(i); $("tabs").appendChild(b);
+  });
+  showMemory(0);
+
+  CONFIG.clauses.forEach(c=>{
+    const l = document.createElement("label"); l.className="clause";
+    const i = document.createElement("input"); i.type="checkbox"; i.onchange = checkSignReady;
+    const s = document.createElement("span"); s.textContent = c; l.append(i,s); $("clauses").appendChild(l);
+  });
+
+  $("authBtn").onclick = authenticate;
+  $("partnerName").addEventListener("keydown", e=>{ if(e.key==="Enter") authenticate(); });
+  $("startDate").onchange = e=>{ store.set("elp.start", e.target.value); calc(); };
+  $("signName").addEventListener("input", checkSignReady);
+  $("signName").addEventListener("keydown", e=>{ if(e.key==="Enter" && !$("signBtn").disabled) sign(); });
+  $("signBtn").onclick = sign; $("audioBtn").onclick = playMelody;
+  $("prev").onclick = ()=>go(step-1); $("next").onclick = ()=>go(step+1);
+  document.addEventListener("keydown", e=>{
+    if(/INPUT|TEXTAREA/.test(document.activeElement.tagName)) return;
+    if(e.key==="ArrowRight" && !$("next").disabled && step<VIEWS-1) go(step+1);
+    if(e.key==="ArrowLeft" && step>0) go(step-1);
+  });
+  $("themeBtn").onclick = ()=>{
+    const r = document.documentElement, dark = r.dataset.theme ? r.dataset.theme==="dark" : !matchMedia("(prefers-color-scheme:light)").matches;
+    r.dataset.theme = dark ? "light" : "dark"; store.set("elp.theme", r.dataset.theme);
+  };
+  const th = store.get("elp.theme",""); if(th) document.documentElement.dataset.theme = th;
+  go(0);
+}
+init();
+</script>
+</body>
+</html>
